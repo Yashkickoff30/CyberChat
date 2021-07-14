@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css"
+      integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk="
+      crossorigin="anonymous"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Alegreya&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ url_for('static',filename='css/style.css') }}"
+    />
+    <title>Chat Room</title>
+  </head>
+  <body>
+    <div class="chat-container">
+      <header class="chat-header">
+        <h1><i class="fas fa-comments"></i> CyberChat</h1>
+        <button id="modal-btn1" class="btn btn-success">
+          View Results and Leave
+        </button>
+      </header>
+      <main class="chat-main">
+        <div class="chat-sidebar">
+          <h3><i class="fas fa-users"></i> Users</h3>
+          <ul id="users"></ul>
+        </div>
+        <div class="message_holder"></div>
+      </main>
+      <div class="chat-form-container">
+        <form id="chat-form">
+          <input
+            type="text"
+            class="form-control"
+            id="myMessage"
+            placeholder="Enter Message"
+            required
+            autocomplete="off"
+            style="
+              width: 100%;
+              margin: 0%;
+              display: -webkit-flex;
+              padding-top: 3px;
+              padding-left: 3px;
+              padding-bottom: 3px;
+              padding-right: 3px;
+            "
+          />
+          <button id="sendbutton" type="button" class="btn btn-success">
+            <i class="fas fa-paper-plane"></i> Send
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div
+      id="my-modal1"
+      class="modal1"
+      data-keyboard="false"
+      data-backdrop="static"
+    >
+      <div class="modal-content1">
+        <div class="modal-header1">
+          <h2>Results of your mental state</h2>
+        </div>
+        <div class="modal-body1">
+          <div class="container-fluid result">
+            <div class="toxicity"></div>
+            <hr />
+            <div id="score"></div>
+            <div class="row">
+              <div id="happy" class="col-sm-4 dimemoji">
+                <span class="emoji">&nbsp;&nbsp;&nbsp;🙂</span>
+                <p class="bold1">Positive</p>
+              </div>
+              <div id="neutral" class="col-sm-4 dimemoji">
+                <span class="emoji">&nbsp;&nbsp;&nbsp;😐</span>
+                <p class="bold1">Neutral</p>
+              </div>
+              <div id="sad" class="col-sm-4 dimemoji">
+                <span class="emoji">&nbsp;&nbsp;&nbsp;🙁</span>
+                <p class="bold1">Negative</p>
+              </div>
+            </div>
+            <div id="count"></div>
+            <div id="verdict"></div>
+          </div>
+        </div>
+        <div class="modal-footer1">
+          <form action="{{ url_for('leave') }}">
+            <button id="leavebutton" type="submit" class="btn btn-danger">
+              Leave Room
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="exampleModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+      style="width: 225px; margin-left: 0"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Sentiment Score</h5>
+            <button
+              type="button"
+              class="close2"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div id="semicircle_container"></div>
+          </div>
+          <div class="modal-footer">
+            <p style="margin-bottom: 0px">
+              This info is based on previous scores!!
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"
+      integrity="sha512-v8ng/uGxkge3d1IJuEo6dJP8JViyvms0cly9pnbfRxT6/31c3dRWxIiwGnMSWwZjHKOuY3EVmijs7k1jz/9bLA=="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.min.js"
+      integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/0.6.1/progressbar.min.js"
+      integrity="sha512-7IoDEsIJGxz/gNyJY/0LRtS45wDSvPFXGPuC7Fo4YueWMNOmWKMAllEqo2Im3pgOjeEwsOoieyliRgdkZnY0ow=="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/1.1.0/progressbar.min.js"
+      integrity="sha512-EZhmSl/hiKyEHklogkakFnSYa5mWsLmTC4ZfvVzhqYNLPbXKAXsjUYRf2O9OlzQN33H0xBVfGSEIUeqt9astHQ=="
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      var username = "{{ username }}";
+      var email = "{{ email }}"
+    </script>
+    <script src="./static/js/main.js"></script>
+    <!-- <script>
+      $('#popover').popover();
+  </script> -->
+  </body>
+</html>
